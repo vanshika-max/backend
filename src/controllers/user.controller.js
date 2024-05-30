@@ -47,7 +47,7 @@ const registerUser=asyncHandler(async(req,res)=>{
         throw new ApiError(409,"user with email or username already existed")
     }
 
-    const avatarLocalPath=req.files?.avatar[0]?.path;
+    const avatarLocalPath = req.files?.avatar[0]?.path;
     // const coverImageLocalPath=req.files?.coverImage[0]?.path;
     let coverImageLocalPath;
     if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
@@ -91,11 +91,18 @@ const loginUser=asyncHandler(async(req,res)=>{
     //check the pass
     //access and refresh token
     //send cookie
-    const {email,username,password}=req.body
-
-    if(!username || !email){
+    const {username,password,email}=req.body
+    // console.log(email);
+    // console.log(username);
+    if(!username && !email){
         throw new ApiError(400,"username or email is required")
     }
+    //another method for login when username or email required
+    //if(!(username|| email)){
+        //throw new  ApiError(400,"username or email is required")
+        // }
+
+    
 
     const user= await User.findOne({
         $or:[{username},{email}]
@@ -151,11 +158,11 @@ const logoutUser=asyncHandler(async(req,res)=>{
         httpOnly:true,
         secure:true
     }
-    return res.status(200
+    return res.status(200)
         .clearCookie("accessToken",options)
         .clearCookie("refreshToken",options)
         .json(new ApiResponse(200,{},"user logged out"))
-    )
+    
 })
 export {
     registerUser,
